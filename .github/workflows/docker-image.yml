@@ -1,1 +1,60 @@
+name: DEPLOY-PRODUCCION
 
+on:
+  push:
+    branches:
+      - produccion
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        run: |
+          curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          node -v
+          npm install -g pnpm
+
+          - name: Cache pnpm modules
+          run: |
+            mkdir -p ~/.pnpm-store
+            pnpm store prune
+  
+      - name: Install dependencies with pnpm
+        run: pnpm install
+
+      # - name: Create env file
+      #   env:
+      #     ENV_FILE: ${{ secrets.ENV_FILE }}
+      #   run: echo $ENV_FILE | base64 --decode > .env
+
+      - name: Build Node.js
+        run: pnpm run build
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+
+      - name: Add remote to known_hosts
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
+
+      - name: Deploy to server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
+        run: rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./dist/ $DEPLOY_USERNAME@$DEPLOY_HOST:$DEPLOY_DIRECTORY
+  

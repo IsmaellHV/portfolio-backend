@@ -22,10 +22,10 @@ jobs:
           node -v
           npm install -g pnpm
 
-          - name: Cache pnpm modules
-          run: |
-            mkdir -p ~/.pnpm-store
-            pnpm store prune
+      - name: Cache pnpm modules
+        run: |
+          mkdir -p ~/.pnpm-store
+          pnpm store prune
   
       - name: Install dependencies with pnpm
         run: pnpm install

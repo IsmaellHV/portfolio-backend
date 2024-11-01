@@ -64,21 +64,21 @@ jobs:
         run: |
           echo "$ENV_FILE" | base64 --decode | ssh $DEPLOY_USERNAME@$DEPLOY_HOST "cat > $DEPLOY_DIRECTORY/.env"
 
-      - name: Install Node.js and pnpm on server
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
-        run: |
-          ssh $DEPLOY_USERNAME@$DEPLOY_HOST "
-            curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash - &&
-            sudo apt-get install -y nodejs &&
-            npm install -g pnpm
-          "
+      # - name: Install Node.js and pnpm on server
+      #   env:
+      #     DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      #     DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+      #   run: |
+      #     ssh $DEPLOY_USERNAME@$DEPLOY_HOST "
+      #       curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash - &&
+      #       sudo apt-get install -y nodejs &&
+      #       npm install -g pnpm
+      #     "
 
-      - name: Install dependencies on server with pnpm
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
-          DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
-        run: |
-          ssh $DEPLOY_USERNAME@$DEPLOY_HOST "cd $DEPLOY_DIRECTORY && pnpm install"
+      # - name: Install dependencies on server with pnpm
+      #   env:
+      #     DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      #     DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+      #     DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
+      #   run: |
+      #     ssh $DEPLOY_USERNAME@$DEPLOY_HOST "cd $DEPLOY_DIRECTORY && pnpm install"

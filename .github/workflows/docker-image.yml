@@ -30,11 +30,6 @@ jobs:
       - name: Install dependencies with pnpm
         run: pnpm install
 
-      # - name: Create env file
-      #   env:
-      #     ENV_FILE: ${{ secrets.ENV_FILE }}
-      #   run: echo $ENV_FILE | base64 --decode > .env
-
       - name: Build Node.js
         run: pnpm run build
 
@@ -51,10 +46,18 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         run: ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
 
-      - name: Deploy to server
+      - name: Deploy build files to server
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
           DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
         run: rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./build/ $DEPLOY_USERNAME@$DEPLOY_HOST:$DEPLOY_DIRECTORY
-  
+
+      - name: Deploy .env file to server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: |
+          echo "$ENV_FILE" | base64 --decode | ssh $DEPLOY_USERNAME@$DEPLOY_HOST "cat > $DEPLOY_DIRECTORY/.env"

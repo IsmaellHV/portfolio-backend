@@ -19,6 +19,7 @@ const run = async () => {
     console.info('   >> NAME : ', ENVIRONMENT.PREFIX);
     console.info('   >> PID: ', process.pid);
     console.info('   >> PORT: ', ENVIRONMENT.PORT);
+    console.info('   >> ENVIRONMENT: ', ENVIRONMENT);
   } catch (error) {
     console.error(error);
   }

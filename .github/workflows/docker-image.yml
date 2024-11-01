@@ -71,20 +71,3 @@ jobs:
           DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
         run: |
           ssh $DEPLOY_USERNAME@$DEPLOY_HOST "cd $DEPLOY_DIRECTORY && npm install"
-
-      - name: Start or Restart PM2
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
-          DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
-          APP_NAME: ${{ secrets.APP_NAME }}
-        run: |
-          ssh $DEPLOY_USERNAME@$DEPLOY_HOST "
-            cd $DEPLOY_DIRECTORY &&
-            if pm2 list | grep -q $APP_NAME; then
-              pm2 restart $APP_NAME;
-            else
-              pm2 start $DEPLOY_DIRECTORY/index.js --name $APP_NAME;
-            fi
-          "
-          

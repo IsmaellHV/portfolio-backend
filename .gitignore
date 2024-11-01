@@ -42,3 +42,4 @@ sp*
 *.conf
 *.env*
 package-lock.json
+ecosytem.js

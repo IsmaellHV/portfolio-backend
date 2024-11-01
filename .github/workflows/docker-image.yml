@@ -70,6 +70,10 @@ jobs:
           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
           DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
         run: |
+          echo "Install dependencies on server"
+          echo $DEPLOY_HOST
+          echo $DEPLOY_USERNAME
+          echo $DEPLOY_DIRECTORY
           ssh $DEPLOY_USERNAME@$DEPLOY_HOST "cd $DEPLOY_DIRECTORY && npm install"
 
       - name: Start or Restart PM2

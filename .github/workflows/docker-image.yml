@@ -26,7 +26,7 @@ jobs:
         run: |
           mkdir -p ~/.pnpm-store
           pnpm store prune
-  
+
       - name: Install dependencies with pnpm
         run: pnpm install
 
@@ -46,12 +46,14 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         run: ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
 
-      - name: Deploy build files to server
+      - name: Deploy build files and package.json to server
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
           DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
-        run: rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./build/ $DEPLOY_USERNAME@$DEPLOY_HOST:$DEPLOY_DIRECTORY
+        run: |
+          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./build/ $DEPLOY_USERNAME@$DEPLOY_HOST:$DEPLOY_DIRECTORY
+          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" package.json $DEPLOY_USERNAME@$DEPLOY_HOST:$DEPLOY_DIRECTORY
 
       - name: Deploy .env file to server
         env:
@@ -61,3 +63,28 @@ jobs:
           ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
           echo "$ENV_FILE" | base64 --decode | ssh $DEPLOY_USERNAME@$DEPLOY_HOST "cat > $DEPLOY_DIRECTORY/.env"
+
+      - name: Install dependencies on server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
+        run: |
+          ssh $DEPLOY_USERNAME@$DEPLOY_HOST "cd $DEPLOY_DIRECTORY && npm install"
+
+      - name: Start or Restart PM2
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
+          APP_NAME: ${{ secrets.APP_NAME }}
+        run: |
+          ssh $DEPLOY_USERNAME@$DEPLOY_HOST "
+            cd $DEPLOY_DIRECTORY &&
+            if pm2 list | grep -q $APP_NAME; then
+              pm2 restart $APP_NAME;
+            else
+              pm2 start $DEPLOY_DIRECTORY/index.js --name $APP_NAME;
+            fi
+          "
+          

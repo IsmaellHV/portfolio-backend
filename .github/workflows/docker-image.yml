@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Node.js
+      - name: Set up Node.js and pnpm in GitHub Actions
         run: |
           curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
           sudo apt-get install -y nodejs
@@ -27,10 +27,10 @@ jobs:
           mkdir -p ~/.pnpm-store
           pnpm store prune
 
-      - name: Install dependencies with pnpm
+      - name: Install dependencies with pnpm (GitHub Actions)
         run: pnpm install
 
-      - name: Build Node.js
+      - name: Build Node.js (GitHub Actions)
         run: pnpm run build
 
       - name: Setup SSH key
@@ -64,10 +64,21 @@ jobs:
         run: |
           echo "$ENV_FILE" | base64 --decode | ssh $DEPLOY_USERNAME@$DEPLOY_HOST "cat > $DEPLOY_DIRECTORY/.env"
 
-      - name: Install dependencies on server
+      - name: Install Node.js and pnpm on server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+        run: |
+          ssh $DEPLOY_USERNAME@$DEPLOY_HOST "
+            curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash - &&
+            sudo apt-get install -y nodejs &&
+            npm install -g pnpm
+          "
+
+      - name: Install dependencies on server with pnpm
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
           DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
         run: |
-          ssh $DEPLOY_USERNAME@$DEPLOY_HOST "cd $DEPLOY_DIRECTORY && npm install"
+          ssh $DEPLOY_USERNAME@$DEPLOY_HOST "cd $DEPLOY_DIRECTORY && pnpm install"

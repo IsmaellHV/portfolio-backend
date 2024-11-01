@@ -56,5 +56,5 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
           DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
-        run: rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./dist/ $DEPLOY_USERNAME@$DEPLOY_HOST:$DEPLOY_DIRECTORY
+        run: rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./build/ $DEPLOY_USERNAME@$DEPLOY_HOST:$DEPLOY_DIRECTORY
   

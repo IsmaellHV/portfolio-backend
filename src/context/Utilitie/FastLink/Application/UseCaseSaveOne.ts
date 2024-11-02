@@ -3,8 +3,8 @@ import type { EntityLogDocument } from '../../../shared/Domain/EntityLogDocument
 import type { EntityMain } from '../Domain/EntityMain';
 import type { IRequestServiceSaveOne, IResponseServiceSaveOne } from '../Domain/IServiceSaveOne';
 import type { RepositoryMain } from '../Domain/RepositoryMain';
-import { AdapterConfigure } from '../Infraestructure/AdapterConfigure';
 import { IError } from '../../../shared/Domain/IError';
+import { AdapterConfigure } from '../Infraestructure/AdapterConfigure';
 
 export class UseCaseSaveOne<C, S> {
   private repository: RepositoryMain<C, S>;
@@ -36,13 +36,13 @@ export class UseCaseSaveOne<C, S> {
       if (entityByCode.length > 0) throw new IError('El código ya existe', 0, 406);
 
       const _id = await this.repository.getId();
-      const shortLink = `${AdapterConfigure.URLSHORTLINK}/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/${params.code}`;
+      const newUrl = `${AdapterConfigure.URLSHORTLINK}/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}`;
 
       const document: EntityMain = {
         _id: new ObjectId(_id),
         code: params.code,
+        newUrl: newUrl,
         originalLink: params.originalLink,
-        shortLink,
         registrar: log,
         actualizar: null,
         eliminar: null,

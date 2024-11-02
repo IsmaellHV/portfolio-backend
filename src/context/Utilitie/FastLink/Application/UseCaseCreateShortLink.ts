@@ -28,23 +28,23 @@ export class UseCaseCreateShortLink<C, S> {
     const session = await this.repository.openSession(connection);
     try {
       await this.repository.openTransaction(session);
+      const newUrl = `${AdapterConfigure.URLSHORTLINK}/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}`;
 
       const entityByOriginalLink: EntityMain[] = await this.repository.findByOriginalLink(connection, params.originalLink);
       if (entityByOriginalLink.length > 0)
         return {
-          shortLink: entityByOriginalLink[0].shortLink,
+          shortLink: `${entityByOriginalLink[0].newUrl}/${entityByOriginalLink[0].code}`,
           originalLink: entityByOriginalLink[0].originalLink,
         };
 
       const _id = await this.repository.getId();
       const code = shortid.generate();
-      const shortLink = `${AdapterConfigure.URLSHORTLINK}/${code}`;
 
       const document: EntityMain = {
         _id: new ObjectId(_id),
         code,
         originalLink: params.originalLink,
-        shortLink,
+        newUrl: newUrl,
         registrar: log,
         actualizar: null,
         eliminar: null,
@@ -54,7 +54,7 @@ export class UseCaseCreateShortLink<C, S> {
       await this.repository.saveOne(connection, session, document);
       await this.repository.commitTransaction(session);
       return {
-        shortLink,
+        shortLink:`${newUrl}/${code}`,
         originalLink: params.originalLink,
       };
     } catch (error) {

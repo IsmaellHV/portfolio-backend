@@ -15,7 +15,7 @@ export class AdapterLog {
         const connection: MongoClient = await AdapterMongoDB.openConnection(ENVIRONMENT.MONGODB.URI);
         try {
           const origen: string = request?.headers?.origin ?? request?.headers?.host ?? '';
-          const dataBase = ENVIRONMENT.ENV === 'produccion' ? ENVIRONMENT.MONGODB.DATABASE : ENVIRONMENT.MONGODB.DATABASE_QA;
+          const dataBase = ENVIRONMENT.ENV === 'produccion' ? ENVIRONMENT.MONGODB.DATABASELOG : ENVIRONMENT.MONGODB.DATABASELOGQA;
           const esquema = schema.toUpperCase();
           const entidad = project ? `${entity}_${project}`.toUpperCase() : entity.toUpperCase();
           const col = connection.db(dataBase).collection(`${esquema}_${entidad}`);
@@ -67,7 +67,7 @@ export class AdapterLog {
       (async () => {
         const connection: MongoClient = await AdapterMongoDB.openConnection(ENVIRONMENT.MONGODB.URI);
         try {
-          const dataBase = ENVIRONMENT.ENV === 'produccion' ? ENVIRONMENT.MONGODB.DATABASE : ENVIRONMENT.MONGODB.DATABASE_QA;
+          const dataBase = ENVIRONMENT.ENV === 'produccion' ? ENVIRONMENT.MONGODB.DATABASELOG : ENVIRONMENT.MONGODB.DATABASELOGQA;
           const esquema = schema.toUpperCase();
           const entidad = project ? `${entity}_${project}`.toUpperCase() : entity.toUpperCase();
           const col = connection.db(dataBase).collection(`${esquema}_${entidad}`);
@@ -127,7 +127,7 @@ export class AdapterLog {
 
   private static async findByIdLog({ _id, schema, entity, project }: { _id: string; schema: string; entity: string; project: string | null }): Promise<EntityLogDataBase> {
     const connection: MongoClient = await AdapterMongoDB.openConnection(ENVIRONMENT.MONGODB.URI);
-    const dataBase = ENVIRONMENT.ENV === 'produccion' ? ENVIRONMENT.MONGODB.DATABASE : ENVIRONMENT.MONGODB.DATABASE_QA;
+    const dataBase = ENVIRONMENT.ENV === 'produccion' ? ENVIRONMENT.MONGODB.DATABASELOG : ENVIRONMENT.MONGODB.DATABASELOGQA;
     const esquema = schema.toUpperCase();
     const entidad = project ? `${entity}_${project}`.toUpperCase() : entity.toUpperCase();
 

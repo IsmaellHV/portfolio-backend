@@ -43,7 +43,8 @@ export const ENVIRONMENT = {
   MONGODB: {
     URI: process.env?.MONGODB_URI || '',
     DATABASE: process.env?.MONGODB_DATABASE || '',
-    DATABASE_QA: process.env?.MONGODB_DATABASE_QA || '',
+    DATABASELOG: process.env?.MONGODB_DATABASE_LOG || '',
+    DATABASELOGQA: process.env?.MONGODB_DATABASE_LOG_QA || '',
   },
 
   UTILITIE: {

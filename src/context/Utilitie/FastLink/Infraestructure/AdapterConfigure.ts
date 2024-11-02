@@ -4,7 +4,6 @@ import { EntityObjectDatabase } from '../../../shared/Domain/EntityObjectDatabas
 
 const URI: string = ENVIRONMENT.MONGODB.URI;
 const DATABASE: string = ENVIRONMENT.MONGODB.DATABASE;
-const DATABASE_QA: string = ENVIRONMENT.MONGODB.DATABASE_QA;
 const SCHEMA: string = ENVIRONMENT.UTILITIE.FASTLINK.SCHEMA;
 const ENTITY: string = ENVIRONMENT.UTILITIE.FASTLINK.ENTITY;
 const URLSHORTLINK: string = ENVIRONMENT.UTILITIE.FASTLINK.URLSHORTLINK;
@@ -39,7 +38,6 @@ export const AdapterConfigure = {
   DATABASE_INDEXES,
   URI,
   DATABASE,
-  DATABASE_QA,
   SCHEMA,
   ENTITY,
   URLSHORTLINK,

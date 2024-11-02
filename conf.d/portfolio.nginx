@@ -10,3 +10,11 @@ server {
     proxy_cache_bypass $http_upgrade;
   }
 }
+
+## FASTLINK.ISMAELHV.COM
+server {
+  server_name fastlink.ismaelhv.com;
+  location ~ ^/(.*)$ {
+    return 301 https://portfolio.ismaelhv.com/Utilitie/FastLink/shortLink/$1;
+  }
+}

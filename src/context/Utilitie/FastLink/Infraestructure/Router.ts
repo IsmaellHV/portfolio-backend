@@ -21,7 +21,6 @@ export class Router {
   }
 
   public async exec(): Promise<void> {
-    this.router.get(`/:shortLink`, this.redirectLink.bind(this));
     this.router.get(`/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/:shortLink`, this.redirectLink.bind(this));
     this.router.get(`/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/createLink/:originalLink`, this.createLink.bind(this));
     this.router.get(`/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/find/:_id`, this.findById.bind(this));

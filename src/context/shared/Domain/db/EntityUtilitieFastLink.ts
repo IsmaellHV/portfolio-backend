@@ -5,7 +5,6 @@ export interface EntityUtilitieFastLink {
   _id: ObjectId;
   code: string;
   originalLink: string;
-  newUrl: string;
   estado: boolean;
   registrar: EntityLogDocument;
   actualizar: EntityLogDocument | null;

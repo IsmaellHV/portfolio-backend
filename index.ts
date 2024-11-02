@@ -13,10 +13,10 @@ const run = async () => {
     const server: ServerREST = new ServerREST();
     await server.exec();
 
-    server.app.use(`/api/${ENVIRONMENT.PREFIX}`, rutas.router);
+    // server.app.use(`/api/${ENVIRONMENT.PREFIX}`, rutas.router);
+    server.app.use(rutas.router);
     await server.middlewareNotFound();
 
-    console.info('   >> NAME : ', ENVIRONMENT.PREFIX);
     console.info('   >> PID: ', process.pid);
     console.info('   >> PORT: ', ENVIRONMENT.PORT);
   } catch (error) {

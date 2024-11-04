@@ -1,10 +1,11 @@
 import { ClientSession, Document, MongoClient, ObjectId, ReadConcern, ReadPreference, InsertManyResult, ReturnDocument } from 'mongodb';
 import { IError } from '../Domain/IError';
+import { ENVIRONMENT } from '../../../env';
 
 export class AdapterMongoDB {
   public static async openConnection(uri: string): Promise<MongoClient> {
     try {
-      const connection: MongoClient = await MongoClient.connect(uri, { directConnection: true });
+      const connection: MongoClient = await MongoClient.connect(uri, { directConnection: ENVIRONMENT.MONGODB.DIRECTCONNECTION });
       return connection;
     } catch (error) {
       if (error.message.indexOf('EADDRINUSE') !== -1) {

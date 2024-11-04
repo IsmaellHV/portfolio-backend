@@ -42,6 +42,7 @@ export const ENVIRONMENT = {
 
   MONGODB: {
     URI: process.env?.MONGODB_URI || '',
+    DIRECTCONNECTION: JSON.parse(process.env.MONGODB_DIRECTCONNECTION || 'true'),
     DATABASE: process.env?.MONGODB_DATABASE || '',
     DATABASELOG: process.env?.MONGODB_DATABASE_LOG || '',
     DATABASELOGQA: process.env?.MONGODB_DATABASE_LOG_QA || '',

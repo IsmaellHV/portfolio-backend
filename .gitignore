@@ -39,7 +39,7 @@ sp*
 
 # Data Files #
 #################
-*.conf
-*.env*
+# *.conf
+# *.env*
 package-lock.json
-ecosytem.js
+# ecosytem.js

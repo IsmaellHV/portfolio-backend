@@ -6,7 +6,7 @@ import { AdapterLog } from './AdapterLog';
 
 export class AdapterAuthorization {
   public static validateAuthBasic(req: RequestCostume, res: Response): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       (async () => {
         try {
           const Param: string[] = req.headers.authorization.split(' ');
@@ -61,12 +61,12 @@ export class AdapterAuthorization {
   }
 
   private static async existsAuthBasic(user: string, pass: string): Promise<boolean> {
-    const pIndex = ENVIRONMENT.AUTH_BASIC.findIndex((x) => x.usr === user && x.pwd === pass);
+    const pIndex = ENVIRONMENT.AUTH_BASIC.findIndex(x => x.usr === user && x.pwd === pass);
     return pIndex === -1 ? false : true;
   }
 
   public static noValidate(req: RequestCostume, res: Response): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       (async () => {
         try {
           throw new IError('No está autorizado para utilizar este servicio', 0, 401);

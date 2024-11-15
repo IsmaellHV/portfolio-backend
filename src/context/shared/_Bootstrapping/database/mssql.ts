@@ -78,13 +78,13 @@ export class BootstrapingDatabaseMssql {
                     FROM INFORMATION_SCHEMA.COLUMNS
                     WHERE TABLE_NAME = '${entity}' AND TABLE_SCHEMA = '${schema}'
                 `);
-        const existingColumns = columnsResult.recordset.map((row) => ({
+        const existingColumns = columnsResult.recordset.map(row => ({
           name: row.COLUMN_NAME,
           nullable: row.IS_NULLABLE === 'YES',
         }));
 
-        const columnsToAdd = structure.filter((field) => !existingColumns.some((column) => column.name === field.name));
-        const columnsToRemove = existingColumns.filter((column) => !structure.some((field) => field.name === column.name));
+        const columnsToAdd = structure.filter(field => !existingColumns.some(column => column.name === field.name));
+        const columnsToRemove = existingColumns.filter(column => !structure.some(field => field.name === column.name));
 
         for (const column of columnsToAdd) {
           const queryAddColumn: Request = session.request();
@@ -107,7 +107,7 @@ export class BootstrapingDatabaseMssql {
         await queryCreateTable.query(`
                     CREATE TABLE [${this.database}].[${schema}].[${entity}]
                     (
-                        ${structure.map((field) => `${field.name} ${field.type}${field.length ? `(${field.length})` : ''} ${field.aditional} ${field.identity ? 'IDENTITY(1,1)' : ''} ${field.primaryKey ? 'PRIMARY KEY' : ''} ${field.computed ? '' : field.nullable ? 'NULL' : 'NOT NULL'}`).join(',')}
+                        ${structure.map(field => `${field.name} ${field.type}${field.length ? `(${field.length})` : ''} ${field.aditional} ${field.identity ? 'IDENTITY(1,1)' : ''} ${field.primaryKey ? 'PRIMARY KEY' : ''} ${field.computed ? '' : field.nullable ? 'NULL' : 'NOT NULL'}`).join(',')}
                     );
                 `);
       }
@@ -144,7 +144,7 @@ export class BootstrapingDatabaseMssql {
       await session.begin();
 
       const queryIndex: Request = session.request();
-      const indexColumns = fields.map((field) => field.name).join(', ');
+      const indexColumns = fields.map(field => field.name).join(', ');
 
       await queryIndex.query(`
             IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = '${indexName}' AND object_id = OBJECT_ID('${schema}.${entity}'))

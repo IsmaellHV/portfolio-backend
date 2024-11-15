@@ -47,7 +47,7 @@ export class ServerREST {
       cors({
         origin: (origin, callback) => {
           if (origin) {
-            if (this.whitelist.filter((org) => origin.includes(org)).length > 0) {
+            if (this.whitelist.filter(org => origin.includes(org)).length > 0) {
               callback(null, true);
             } else {
               callback(new Error('Not allowed by CORS'));
@@ -121,7 +121,7 @@ export class ServerREST {
   private async middlewareError() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.app.use((err: any, req: RequestCostume, res: Response, next: NextFunction) => {
-      new Promise<void>((resolve) => {
+      new Promise<void>(resolve => {
         (async () => {
           try {
             throw new IError(err.message, err.errorCode || 0, err.statusCode || 500, 'Se produjo un error. Por favor, inténtelo de nuevo más tarde');
@@ -147,7 +147,7 @@ export class ServerREST {
 
   public async middlewareNotFound() {
     this.app.use('*', (req: RequestCostume, res: Response) => {
-      new Promise<void>((resolve) => {
+      new Promise<void>(resolve => {
         (async () => {
           try {
             throw new IError('EndPoint not found', 0, 404, 'Servicio no encontrado');

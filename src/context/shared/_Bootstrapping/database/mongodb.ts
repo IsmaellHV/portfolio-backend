@@ -31,7 +31,7 @@ export class BootstrapingDatabaseMongoDb {
     const client: MongoClient = await AdapterMongoDB.openConnection(this.uri);
     const db = client.db(this.database);
     const collections = await db.listCollections().toArray();
-    if (collections.findIndex((col) => col.name === `${schema}_${entity}`) === -1) {
+    if (collections.findIndex(col => col.name === `${schema}_${entity}`) === -1) {
       await db.createCollection(`${schema}_${entity}`);
     }
     await client.close();
@@ -45,7 +45,7 @@ export class BootstrapingDatabaseMongoDb {
         const col = db.collection(`${row.schema}_${row.entity}`);
 
         const indexesExists = await col.listIndexes().toArray();
-        if (!indexesExists.find((idx) => idx.name === row.name)) {
+        if (!indexesExists.find(idx => idx.name === row.name)) {
           await col.createIndex(
             row.fields.reduce((obj, subrow) => {
               Object.assign(obj, { [subrow.name]: subrow.direction });
@@ -55,8 +55,6 @@ export class BootstrapingDatabaseMongoDb {
           );
         }
       }
-    } catch (error) {
-      throw error;
     } finally {
       await client.close();
     }

@@ -73,8 +73,8 @@ export class AdapterGenerico {
     if (error.instancePath) {
       parent = error.instancePath
         .split('/')
-        .filter((row) => row.trim() !== '')
-        .map((row) =>
+        .filter(row => row.trim() !== '')
+        .map(row =>
           row
             .replace(/([A-Z0-9])/g, ' $1')
             .trim()

@@ -10,7 +10,7 @@ export class AdapterLog {
   constructor() {}
 
   public static insertLog({ request, schema, entity, project }: { request: RequestCostume; schema: string; entity: string; project: string | null }): Promise<string> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       (async () => {
         const connection: MongoClient = await AdapterMongoDB.openConnection(ENVIRONMENT.MONGODB.URI);
         try {
@@ -63,7 +63,7 @@ export class AdapterLog {
   }
 
   public static updateLog({ _id, statusAction, statusHttp, error, schema, entity, project }: { _id: string; statusAction: -1 | 0 | 1; statusHttp: number; error?: IError | null; schema: string; entity: string; project: string | null }): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       (async () => {
         const connection: MongoClient = await AdapterMongoDB.openConnection(ENVIRONMENT.MONGODB.URI);
         try {
@@ -99,7 +99,7 @@ export class AdapterLog {
   }
 
   private static handleLogError({ _id, schema, entity, project, error }: { _id: string; schema: string; entity: string; project: string | null; error?: IError | null }): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       (async () => {
         try {
           const log = await this.findByIdLog({ _id, schema, entity, project });

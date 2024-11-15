@@ -38,7 +38,7 @@ export class RepositoryMainImpl extends RepositoryImplMongo implements Repositor
     const schema = {
       type: 'object',
       properties: {
-        code: { type: 'string'},
+        code: { type: 'string' },
       },
       required: ['code'],
       additionalProperties: false,
@@ -50,7 +50,6 @@ export class RepositoryMainImpl extends RepositoryImplMongo implements Repositor
       throw new IError(AdapterGenerico.decodeErrorAJV(validate.errors[0]), 0, 406, 'Error de validación');
     }
   }
-
 
   public async validateSaveOne(params: IRequestServiceSaveOne): Promise<void> {
     const schema = {

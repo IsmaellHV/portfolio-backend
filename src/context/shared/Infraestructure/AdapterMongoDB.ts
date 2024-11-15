@@ -83,7 +83,7 @@ export class AdapterMongoDB {
           }
         }
         if (key === '$in' || key === '$nin') {
-          obj[key] = obj[key].map((row) => (checkForValidMongoDbID.test(row) ? new ObjectId(row) : row));
+          obj[key] = obj[key].map(row => (checkForValidMongoDbID.test(row) ? new ObjectId(row) : row));
         }
         if (typeof obj[key] === 'object') {
           if (Array.isArray(obj[key])) {
@@ -140,7 +140,7 @@ export class AdapterMongoDB {
                 a['$match'][b][c] = new Date(a['$match'][b][c]);
               }
               if (c.includes('$in')) {
-                a['$match'][b][c] = a['$match'][b][c].map((d) => new Date(d));
+                a['$match'][b][c] = a['$match'][b][c].map(d => new Date(d));
               }
             }
           }
@@ -173,7 +173,7 @@ export class AdapterMongoDB {
     const countersCollection = db.collection('counters');
 
     const collections = await db.listCollections().toArray();
-    const collectionExists = collections.some((collection) => collection.name === 'counters');
+    const collectionExists = collections.some(collection => collection.name === 'counters');
     if (!collectionExists) {
       await db.createCollection('counters');
     }

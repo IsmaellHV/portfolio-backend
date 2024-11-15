@@ -52,7 +52,7 @@ export class UseCaseCreateShortLink<C, S> {
       await this.repository.saveOne(connection, session, document);
       await this.repository.commitTransaction(session);
       return {
-        shortLink:`${AdapterConfigure.URLSHORTLINK}/${code}`,
+        shortLink: `${AdapterConfigure.URLSHORTLINK}/${code}`,
         originalLink: params.originalLink,
       };
     } catch (error) {

@@ -30,7 +30,7 @@ export class Router {
   private async findById(req: RequestCostume, res: Response): Promise<void> {
     return new Promise(resolve => {
       (async () => {
-        if (req.authJWT) {
+        if (req.authBasic) {
           if (!(await AdapterAuthorization.validateAuthBasic(req, res))) return resolve();
         } else {
           await AdapterAuthorization.noValidate(req, res);
@@ -66,7 +66,7 @@ export class Router {
   private async createLink(req: RequestCostume, res: Response): Promise<void> {
     return new Promise(resolve => {
       (async () => {
-        if (req.authJWT) {
+        if (req.authBasic) {
           if (!(await AdapterAuthorization.validateAuthBasic(req, res))) return resolve();
         } else {
           await AdapterAuthorization.noValidate(req, res);
@@ -103,7 +103,7 @@ export class Router {
   private async saveOne(req: RequestCostume, res: Response): Promise<void> {
     return new Promise(resolve => {
       (async () => {
-        if (req.authJWT) {
+        if (req.authBasic) {
           if (!(await AdapterAuthorization.validateAuthBasic(req, res))) return resolve();
         } else {
           await AdapterAuthorization.noValidate(req, res);
@@ -147,8 +147,6 @@ export class Router {
         try {
           result = await this.controller.findByCode({ code: body.shortLink });
           res.redirect(result.originalLink);
-          res.setHeader('Content-Type', 'application/json; charset=utf-8');
-          res.status(200).json(result);
           resolve();
           if (_id) await AdapterLog.updateLog({ _id, statusAction: 1, statusHttp: 200, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
         } catch (err) {

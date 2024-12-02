@@ -1,7 +1,10 @@
-import globals from 'globals';
 import pluginJs from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import pluginTs from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
 import eslintConfigPrettier from 'eslint-config-prettier';
+import eslintPluginPrettier from 'eslint-plugin-prettier';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 export default [
   {
@@ -9,6 +12,7 @@ export default [
   },
   {
     languageOptions: {
+      parser: tsParser,
       globals: {
         ...globals.browser,
         ...globals.node,
@@ -22,10 +26,20 @@ export default [
   },
   eslintConfigPrettier,
   {
+    plugins: {
+      prettier: eslintPluginPrettier,
+      '@typescript-eslint': pluginTs,
+    },
+  },
+  {
     rules: {
+      ...pluginJs.configs.recommended.rules,
+      ...pluginTs.configs.recommended.rules,
+      'prettier/prettier': 'error',
+      'prefer-const': 'error',
       '@typescript-eslint/no-empty-object-type': 'off',
-      // '@typescript-eslint/no-empty-interface': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+      // '@typescript-eslint/no-empty-interface': 'off',
       // '@typescript-eslint/no-inferrable-types': 'off',
       // '@typescript-eslint/ban-types': 'off',
       // 'no-useless-catch': 'off',

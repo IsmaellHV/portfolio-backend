@@ -20,7 +20,6 @@ export class Bootstrapping {
         break;
       default:
         throw new Error('No support motor database');
-        break;
     }
   }
 

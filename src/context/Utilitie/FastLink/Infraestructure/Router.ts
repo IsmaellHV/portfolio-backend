@@ -28,114 +28,141 @@ export class Router {
   }
 
   private async findById(req: RequestCostume, res: Response): Promise<void> {
-    if (req.authBasic) {
-      if (!(await AdapterAuthorization.validateAuthBasic(req, res))) return;
-    } else {
-      await AdapterAuthorization.noValidate(req, res);
-      return;
-    }
+    return new Promise(resolve => {
+      (async () => {
+        if (req.authJWT) {
+          if (!(await AdapterAuthorization.validateAuthBasic(req, res))) return resolve();
+        } else {
+          await AdapterAuthorization.noValidate(req, res);
+          return resolve();
+        }
 
-    const _id: string = req.params._id;
-    const body: IRequestServiceFindById = { _id };
-    let result: IResponseServiceFindById;
+        const _id: string = req.params._id;
+        const body: IRequestServiceFindById = { _id };
+        let result: IResponseServiceFindById;
 
-    try {
-      result = await this.controller.findById(body);
+        try {
+          result = await this.controller.findById(body);
 
-      res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.status(200).json(result);
-    } catch (err) {
-      const error = err as IError;
-      error.message = err.message || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
-      error.statusHttp = err.statusHttp || 406;
-      error.errorCode = err.errorCode || 0;
-      error.messageClient = err.messageClient || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
+          res.setHeader('Content-Type', 'application/json; charset=utf-8');
+          res.status(200).json(result);
+          resolve();
+          if (_id) await AdapterLog.updateLog({ _id, statusAction: 1, statusHttp: 200, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
+        } catch (err) {
+          const error = err as IError;
+          error.message = err.message || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
+          error.statusHttp = err.statusHttp || 406;
+          error.errorCode = err.errorCode || 0;
+          error.messageClient = err.messageClient || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
 
-      res.status(error.statusHttp).json({ error: true, errorDescription: error.messageClient, errorCode: error.errorCode, message: error.message });
-    }
+          res.status(error.statusHttp).json({ error: true, errorDescription: error.messageClient, errorCode: error.errorCode, message: error.message });
+          resolve();
+          if (_id) await AdapterLog.updateLog({ _id, statusAction: -1, statusHttp: error.statusHttp, error, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
+        }
+      })();
+    });
   }
 
   private async createLink(req: RequestCostume, res: Response): Promise<void> {
-    if (req.authBasic) {
-      if (!(await AdapterAuthorization.validateAuthBasic(req, res))) return;
-    } else {
-      await AdapterAuthorization.noValidate(req, res);
-      return;
-    }
+    return new Promise(resolve => {
+      (async () => {
+        if (req.authJWT) {
+          if (!(await AdapterAuthorization.validateAuthBasic(req, res))) return resolve();
+        } else {
+          await AdapterAuthorization.noValidate(req, res);
+          return resolve();
+        }
 
-    const originalLink: string = req.params.originalLink;
-    const body: IRequestServiceCreateShortLink = { originalLink: decodeURIComponent(originalLink) };
-    let result: IResponseServiceCreateShortLink;
+        const originalLink: string = req.params.originalLink;
+        const body: IRequestServiceCreateShortLink = { originalLink: decodeURIComponent(originalLink) };
+        let result: IResponseServiceCreateShortLink;
 
-    const _id = await AdapterLog.insertLog({ request: req, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
-    try {
-      result = await this.controller.createShortLink(body, AdapterGenerico.generateLogEntity(req));
+        const _id = await AdapterLog.insertLog({ request: req, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
+        try {
+          result = await this.controller.createShortLink(body, AdapterGenerico.generateLogEntity(req));
 
-      res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.status(200).json(result);
+          res.setHeader('Content-Type', 'application/json; charset=utf-8');
+          res.status(200).json(result);
+          resolve();
+          if (_id) await AdapterLog.updateLog({ _id, statusAction: 1, statusHttp: 200, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
+        } catch (err) {
+          const error = err as IError;
+          error.message = err.message || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
+          error.statusHttp = err.statusHttp || 406;
+          error.errorCode = err.errorCode || 0;
+          error.messageClient = err.messageClient || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
 
-      if (_id) await AdapterLog.updateLog({ _id, statusAction: 1, statusHttp: 200, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
-    } catch (err) {
-      const error = err as IError;
-      error.message = err.message || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
-      error.statusHttp = err.statusHttp || 406;
-      error.errorCode = err.errorCode || 0;
-      error.messageClient = err.messageClient || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
-
-      res.status(error.statusHttp).json({ error: true, errorDescription: error.messageClient, errorCode: error.errorCode, message: error.message });
-      if (_id) await AdapterLog.updateLog({ _id, statusAction: -1, statusHttp: error.statusHttp, error, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
-    }
+          res.status(error.statusHttp).json({ error: true, errorDescription: error.messageClient, errorCode: error.errorCode, message: error.message });
+          resolve();
+          if (_id) await AdapterLog.updateLog({ _id, statusAction: -1, statusHttp: error.statusHttp, error, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
+        }
+      })();
+    });
   }
 
   private async saveOne(req: RequestCostume, res: Response): Promise<void> {
-    if (req.authBasic) {
-      if (!(await AdapterAuthorization.validateAuthBasic(req, res))) return;
-    } else {
-      await AdapterAuthorization.noValidate(req, res);
-      return;
-    }
+    return new Promise(resolve => {
+      (async () => {
+        if (req.authJWT) {
+          if (!(await AdapterAuthorization.validateAuthBasic(req, res))) return resolve();
+        } else {
+          await AdapterAuthorization.noValidate(req, res);
+          return resolve();
+        }
 
-    const body: IRequestServiceSaveOne = req.body;
-    let result: IResponseServiceSaveOne;
+        const body: IRequestServiceSaveOne = req.body;
+        let result: IResponseServiceSaveOne;
 
-    const _id = await AdapterLog.insertLog({ request: req, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
-    try {
-      result = await this.controller.saveOne(body, AdapterGenerico.generateLogEntity(req));
+        const _id = await AdapterLog.insertLog({ request: req, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
+        try {
+          result = await this.controller.saveOne(body, AdapterGenerico.generateLogEntity(req));
 
-      res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.status(200).json(result);
+          res.setHeader('Content-Type', 'application/json; charset=utf-8');
+          res.status(200).json(result);
+          resolve();
+          if (_id) await AdapterLog.updateLog({ _id, statusAction: 1, statusHttp: 200, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
+        } catch (err) {
+          const error = err as IError;
+          error.message = err.message || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
+          error.statusHttp = err.statusHttp || 406;
+          error.errorCode = err.errorCode || 0;
+          error.messageClient = err.messageClient || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
 
-      if (_id) await AdapterLog.updateLog({ _id, statusAction: 1, statusHttp: 200, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
-    } catch (err) {
-      const error = err as IError;
-      error.message = err.message || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
-      error.statusHttp = err.statusHttp || 406;
-      error.errorCode = err.errorCode || 0;
-      error.messageClient = err.messageClient || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
-
-      res.status(error.statusHttp).json({ error: true, errorDescription: error.messageClient, errorCode: error.errorCode, message: error.message });
-      if (_id) await AdapterLog.updateLog({ _id, statusAction: -1, statusHttp: error.statusHttp, error, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
-    }
+          res.status(error.statusHttp).json({ error: true, errorDescription: error.messageClient, errorCode: error.errorCode, message: error.message });
+          resolve();
+          if (_id) await AdapterLog.updateLog({ _id, statusAction: -1, statusHttp: error.statusHttp, error, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
+        }
+      })();
+    });
   }
 
   private async redirectLink(req: RequestCostume, res: Response): Promise<void> {
-    const shortLink: string = req.params.shortLink;
-    const body: IRequestServiceRedirectLink = { shortLink };
-    let result: IResponseServiceRedirectLink;
+    return new Promise(resolve => {
+      (async () => {
+        const shortLink: string = req.params.shortLink;
+        const body: IRequestServiceRedirectLink = { shortLink };
+        let result: IResponseServiceRedirectLink;
 
-    try {
-      result = await this.controller.findByCode({ code: body.shortLink });
-      res.redirect(result.originalLink);
-    } catch (err) {
-      const error = err as IError;
-      error.message = err.message || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
-      error.statusHttp = err.statusHttp || 406;
-      error.errorCode = err.errorCode || 0;
-      error.messageClient = err.messageClient || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
+        const _id = await AdapterLog.insertLog({ request: req, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
+        try {
+          result = await this.controller.findByCode({ code: body.shortLink });
+          res.redirect(result.originalLink);
+          res.setHeader('Content-Type', 'application/json; charset=utf-8');
+          res.status(200).json(result);
+          resolve();
+          if (_id) await AdapterLog.updateLog({ _id, statusAction: 1, statusHttp: 200, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
+        } catch (err) {
+          const error = err as IError;
+          error.message = err.message || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
+          error.statusHttp = err.statusHttp || 406;
+          error.errorCode = err.errorCode || 0;
+          error.messageClient = err.messageClient || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
 
-      res.status(error.statusHttp).json({ error: true, errorDescription: error.messageClient });
-      // res.status(error.statusHttp).json({ error: true, errorDescription: error.messageClient, errorCode: error.errorCode, message: error.message });
-      return;
-    }
+          res.status(error.statusHttp).json({ error: true, errorDescription: error.messageClient, errorCode: error.errorCode, message: error.message });
+          resolve();
+          if (_id) await AdapterLog.updateLog({ _id, statusAction: -1, statusHttp: error.statusHttp, error, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
+        }
+      })();
+    });
   }
 }

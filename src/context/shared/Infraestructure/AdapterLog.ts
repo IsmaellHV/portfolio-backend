@@ -127,13 +127,17 @@ export class AdapterLog {
 
   private static async findByIdLog({ _id, schema, entity, project }: { _id: string; schema: string; entity: string; project: string | null }): Promise<EntityLogDataBase> {
     const connection: MongoClient = await AdapterMongoDB.openConnection(ENVIRONMENT.MONGODB.URI);
-    const dataBase = ENVIRONMENT.ENV === 'produccion' ? ENVIRONMENT.MONGODB.DATABASELOG : ENVIRONMENT.MONGODB.DATABASELOGQA;
-    const esquema = schema.toUpperCase();
-    const entidad = project ? `${entity}_${project}`.toUpperCase() : entity.toUpperCase();
+    try {
+      const dataBase = ENVIRONMENT.ENV === 'produccion' ? ENVIRONMENT.MONGODB.DATABASELOG : ENVIRONMENT.MONGODB.DATABASELOGQA;
+      const esquema = schema.toUpperCase();
+      const entidad = project ? `${entity}_${project}`.toUpperCase() : entity.toUpperCase();
 
-    const registry: EntityLogDataBase[] = await AdapterMongoDB.find(connection, dataBase, esquema, entidad, { _id });
-    if (!registry.length) throw new Error('Registro no encontrado');
+      const registry: EntityLogDataBase[] = await AdapterMongoDB.find(connection, dataBase, esquema, entidad, { _id });
+      if (!registry.length) throw new Error('Registro no encontrado');
 
-    return registry[0];
+      return registry[0];
+    } finally {
+      await AdapterMongoDB.closeConnection(connection);
+    }
   }
 }

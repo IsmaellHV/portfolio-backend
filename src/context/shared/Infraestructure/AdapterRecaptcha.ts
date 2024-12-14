@@ -7,11 +7,13 @@ export class AdapterReCaptcha {
     if (!ENVIRONMENT.RECAPTCHA.VALIDATE) return;
     const config: AxiosRequestConfig = {
       method: 'POST',
+      url: ENVIRONMENT.RECAPTCHA.URL,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       data: `secret=${ENVIRONMENT.RECAPTCHA.KEY}&response=${captcha}`,
     };
+    console.log(config);
 
     const resp = await axios.request(config);
 

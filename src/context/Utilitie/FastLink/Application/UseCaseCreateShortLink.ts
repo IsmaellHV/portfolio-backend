@@ -16,6 +16,7 @@ export class UseCaseCreateShortLink<C, S> {
 
   public async exec(params: IRequestServiceCreateShortLink, log: EntityLogDocument): Promise<IResponseServiceCreateShortLink> {
     await this.repository.validateCreateShortLink(params);
+    console.log({ params });
     await AdapterReCaptcha.verifyCaptcha(params.captcha);
     const connection = await this.repository.openConnection();
     try {

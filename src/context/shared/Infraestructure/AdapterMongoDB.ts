@@ -90,8 +90,8 @@ export class AdapterMongoDB {
             for (const row of obj[key]) {
               AdapterMongoDB.formatDocument(row);
             }
-          } else if (obj[key] instanceof Date) {
-            console.info(obj[key]);
+            // } else if (obj[key] instanceof Date) {
+            // console.info(obj[key]);
           } else {
             AdapterMongoDB.formatDocument(obj[key]);
           }

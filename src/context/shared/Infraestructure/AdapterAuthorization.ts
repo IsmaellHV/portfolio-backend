@@ -1,11 +1,11 @@
 import { Response } from 'express';
 import { ENVIRONMENT } from '../../../env';
-import { RequestCostume } from '../../../rest/RequestCostume';
+import { IRequest } from '../../../rest/IRequest';
 import { IError } from '../Domain/IError';
 import { AdapterLog } from './AdapterLog';
 
 export class AdapterAuthorization {
-  public static validateAuthBasic(req: RequestCostume, res: Response): Promise<boolean> {
+  public static validateAuthBasic(req: IRequest, res: Response): Promise<boolean> {
     return new Promise(resolve => {
       (async () => {
         try {
@@ -65,7 +65,7 @@ export class AdapterAuthorization {
     return pIndex === -1 ? false : true;
   }
 
-  public static noValidate(req: RequestCostume, res: Response): Promise<boolean> {
+  public static noValidate(req: IRequest, res: Response): Promise<boolean> {
     return new Promise(resolve => {
       (async () => {
         try {

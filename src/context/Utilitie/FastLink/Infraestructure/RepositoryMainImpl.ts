@@ -73,8 +73,9 @@ export class RepositoryMainImpl extends RepositoryImplMongo implements Repositor
       type: 'object',
       properties: {
         originalLink: { type: 'string', format: 'uri' },
+        captcha: { type: 'string' },
       },
-      required: ['originalLink'],
+      required: ['originalLink', 'captcha'],
     };
 
     const validate = ajv.compile(schema);

@@ -1,11 +1,11 @@
 import { ErrorObject } from 'ajv';
-import { RequestCostume } from '../../../rest/RequestCostume';
+import { IRequest } from '../../../rest/IRequest';
 import { EntityLogDocument } from '../Domain/EntityLogDocument';
 import fs from 'fs';
 import path from 'path';
 
 export class AdapterGenerico {
-  public static generateLogEntity = (data: RequestCostume): EntityLogDocument => {
+  public static generateLogEntity = (data: IRequest): EntityLogDocument => {
     return {
       fecha: new Date(),
       origen: data.paramLog.origen,

@@ -5,6 +5,7 @@ import type { EntityMain } from '../Domain/EntityMain';
 import type { IRequestServiceCreateShortLink, IResponseServiceCreateShortLink } from '../Domain/IServiceCreateShortLink';
 import type { RepositoryMain } from '../Domain/RepositoryMain';
 import { AdapterConfigure } from '../Infraestructure/AdapterConfigure';
+import { AdapterReCaptcha } from '../../../shared/Infraestructure/AdapterRecaptcha';
 
 export class UseCaseCreateShortLink<C, S> {
   private repository: RepositoryMain<C, S>;
@@ -15,6 +16,7 @@ export class UseCaseCreateShortLink<C, S> {
 
   public async exec(params: IRequestServiceCreateShortLink, log: EntityLogDocument): Promise<IResponseServiceCreateShortLink> {
     await this.repository.validateCreateShortLink(params);
+    await AdapterReCaptcha.verifyCaptcha(params.captcha);
     const connection = await this.repository.openConnection();
     try {
       const result = await this._exec(connection, params, log);

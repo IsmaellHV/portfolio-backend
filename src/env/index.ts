@@ -12,9 +12,9 @@ export const ENVIRONMENT = {
   KEY_ENCRYPT: process.env?.KEY_ENCRYPT ? process.env.KEY_ENCRYPT : '',
 
   RECAPTCHA: {
-    URL: process.env?.URL_CAPTCHA ? process.env.URL_CAPTCHA : '',
-    KEY: process.env?.KEY_CAPTCHA ? process.env.KEY_CAPTCHA : '',
-    VALIDATE: process.env?.VALIDATE_CAPTCHA ? JSON.parse(process.env.VALIDATE_CAPTCHA) : true,
+    URL: process.env?.RECAPTCHA_URL ? process.env.RECAPTCHA_URL : '',
+    KEY: process.env?.RECAPTCHA_KEY ? process.env.RECAPTCHA_KEY : '',
+    VALIDATE: process.env?.RECAPTCHA_VALIDATE ? process.env.RECAPTCHA_VALIDATE : 'false',
   },
 
   JWT: {

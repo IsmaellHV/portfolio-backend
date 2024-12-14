@@ -1,5 +1,5 @@
 import { Response, Router as RouterExpress } from 'express';
-import { RequestCostume } from '../../../../rest/RequestCostume';
+import { IRequest } from '../../../../rest/IRequest';
 import { IError } from '../../../shared/Domain/IError';
 import { AdapterAuthorization } from '../../../shared/Infraestructure/AdapterAuthorization';
 import { AdapterGenerico } from '../../../shared/Infraestructure/AdapterGenerico';
@@ -22,12 +22,12 @@ export class Router {
 
   public async exec(): Promise<void> {
     this.router.get(`/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/shortLink/:shortLink`, this.redirectLink.bind(this));
-    this.router.get(`/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/createLink/:originalLink`, this.createLink.bind(this));
+    this.router.get(`/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/createLink/:originalLink/:captcha`, this.createLink.bind(this));
     this.router.get(`/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/find/:_id`, this.findById.bind(this));
     this.router.post(`/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/saveOne`, this.saveOne.bind(this));
   }
 
-  private async findById(req: RequestCostume, res: Response): Promise<void> {
+  private async findById(req: IRequest, res: Response): Promise<void> {
     return new Promise(resolve => {
       (async () => {
         if (req.authBasic) {
@@ -63,7 +63,7 @@ export class Router {
     });
   }
 
-  private async createLink(req: RequestCostume, res: Response): Promise<void> {
+  private async createLink(req: IRequest, res: Response): Promise<void> {
     return new Promise(resolve => {
       (async () => {
         if (req.authBasic) {
@@ -73,8 +73,8 @@ export class Router {
           return resolve();
         }
 
-        const originalLink: string = req.params.originalLink;
-        const body: IRequestServiceCreateShortLink = { originalLink: decodeURIComponent(originalLink) };
+        const { originalLink, captcha } = req.params;
+        const body: IRequestServiceCreateShortLink = { originalLink: decodeURIComponent(originalLink), captcha: decodeURIComponent(captcha) };
         let result: IResponseServiceCreateShortLink;
 
         const _id = await AdapterLog.insertLog({ request: req, schema: AdapterConfigure.SCHEMA, entity: AdapterConfigure.ENTITY, project: null });
@@ -100,7 +100,7 @@ export class Router {
     });
   }
 
-  private async saveOne(req: RequestCostume, res: Response): Promise<void> {
+  private async saveOne(req: IRequest, res: Response): Promise<void> {
     return new Promise(resolve => {
       (async () => {
         if (req.authBasic) {
@@ -136,7 +136,7 @@ export class Router {
     });
   }
 
-  private async redirectLink(req: RequestCostume, res: Response): Promise<void> {
+  private async redirectLink(req: IRequest, res: Response): Promise<void> {
     return new Promise(resolve => {
       (async () => {
         const shortLink: string = req.params.shortLink;

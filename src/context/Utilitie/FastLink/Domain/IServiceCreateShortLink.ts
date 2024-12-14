@@ -1,5 +1,6 @@
 export interface IRequestServiceCreateShortLink {
   originalLink: string;
+  captcha: string;
 }
 
 export interface IResponseServiceCreateShortLink {

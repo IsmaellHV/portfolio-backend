@@ -1,5 +1,5 @@
 import { ENVIRONMENT } from '../../../env';
-import { RequestCostume } from '../../../rest/RequestCostume';
+import { IRequest } from '../../../rest/IRequest';
 import { IError } from '../Domain/IError';
 import { EntityLogDataBase } from '../Domain/db/EntityLogDataBase';
 // import { AdapterWsp } from './AdapterWsp';
@@ -9,7 +9,7 @@ import { AdapterMongoDB } from './AdapterMongoDB';
 export class AdapterLog {
   constructor() {}
 
-  public static insertLog({ request, schema, entity, project }: { request: RequestCostume; schema: string; entity: string; project: string | null }): Promise<string> {
+  public static insertLog({ request, schema, entity, project }: { request: IRequest; schema: string; entity: string; project: string | null }): Promise<string> {
     return new Promise(resolve => {
       (async () => {
         const connection: MongoClient = await AdapterMongoDB.openConnection(ENVIRONMENT.MONGODB.URI);

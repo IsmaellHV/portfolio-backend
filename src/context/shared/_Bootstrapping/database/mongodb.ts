@@ -29,12 +29,15 @@ export class BootstrapingDatabaseMongoDb {
 
   private async createCollection(schema: string, entity: string): Promise<void> {
     const client: MongoClient = await AdapterMongoDB.openConnection(this.uri);
-    const db = client.db(this.database);
-    const collections = await db.listCollections().toArray();
-    if (collections.findIndex(col => col.name === `${schema}_${entity}`) === -1) {
-      await db.createCollection(`${schema}_${entity}`);
+    try {
+      const db = client.db(this.database);
+      const collections = await db.listCollections().toArray();
+      if (collections.findIndex(col => col.name === `${schema}_${entity}`) === -1) {
+        await db.createCollection(`${schema}_${entity}`);
+      }
+    } finally {
+      await client.close();
     }
-    await client.close();
   }
 
   private async createIndexes(): Promise<void> {

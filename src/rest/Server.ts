@@ -1,19 +1,16 @@
 import compression from 'compression';
 import cors from 'cors';
-import eetase from 'eetase';
 import express, { Express, NextFunction, Response } from 'express';
 import helmet from 'helmet';
-import htpp from 'http';
 import morgan from 'morgan';
 import parse from 'ua-parser-js';
-import { IError } from '../context/shared/Domain/IError';
 import { AdapterLog } from '../context/shared/Infraestructure/AdapterLog';
 import { ENVIRONMENT } from '../env';
-import { RequestCostume } from './RequestCostume';
+import { IError } from '../types/IError';
+import { IRequest } from './IRequest';
 
 export class ServerREST {
   public app: Express;
-  private httpServer: any;
   private port: number;
   private whitelist: string[];
 
@@ -28,8 +25,7 @@ export class ServerREST {
     await this.configureDataType();
     await this.middlewareValidator();
     await this.middlewareError();
-    this.httpServer = eetase(htpp.createServer(this.app));
-    this.httpServer.listen(this.port);
+    this.app.listen(this.port);
   }
 
   private async createServer() {
@@ -67,7 +63,7 @@ export class ServerREST {
   }
 
   private async middlewareValidator() {
-    this.app.use((req: RequestCostume, res: Response, next: NextFunction) => {
+    this.app.use((req: IRequest, res: Response, next: NextFunction) => {
       new Promise<void>((resolve, reject) => {
         (async () => {
           req.authBasic = false;
@@ -120,7 +116,7 @@ export class ServerREST {
 
   private async middlewareError() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.app.use((err: any, req: RequestCostume, res: Response, next: NextFunction) => {
+    this.app.use((err: any, req: IRequest, res: Response, next: NextFunction) => {
       new Promise<void>(resolve => {
         (async () => {
           try {
@@ -146,7 +142,7 @@ export class ServerREST {
   }
 
   public async middlewareNotFound() {
-    this.app.use('*', (req: RequestCostume, res: Response) => {
+    this.app.use('*', (req: IRequest, res: Response) => {
       new Promise<void>(resolve => {
         (async () => {
           try {

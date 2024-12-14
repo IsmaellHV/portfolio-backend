@@ -1,14 +1,23 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { ENVIRONMENT } from '../../../env';
+import { IError } from '../Domain/IError';
 
 export class AdapterReCaptcha {
   public static async verifyCaptcha(captcha: string): Promise<void> {
     if (!ENVIRONMENT.RECAPTCHA.VALIDATE) return;
-    const response = await axios.get(`${ENVIRONMENT.RECAPTCHA.URL}?secret=${ENVIRONMENT.RECAPTCHA.KEY}&response=${captcha}`);
-    if (response.status !== 200) throw Error('Catpcha no válido');
+    const config: AxiosRequestConfig = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      data: `secret=${ENVIRONMENT.RECAPTCHA.KEY}&response=${captcha}`,
+    };
 
-    const { success, score } = response.data;
-    if (!success) throw Error('Catpcha no válido');
-    if (score <= 0.5) throw Error('Catpcha no válido');
+    const resp = await axios.request(config);
+
+    if (resp.status !== 200) throw new IError(`Error: status code invalid ${resp.status}`, 0, 406, 'Captcha no válido');
+    console.log(resp.data);
+    const { success } = resp.data;
+    if (!success) throw new IError(`Error: success: ${success} `, 0, 406, 'Captcha no válido');
   }
 }

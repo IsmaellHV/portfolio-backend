@@ -13,12 +13,8 @@ export class AdapterReCaptcha {
       },
       data: `secret=${ENVIRONMENT.RECAPTCHA.KEY}&response=${captcha}`,
     };
-    console.log(config);
-
     const resp = await axios.request(config);
-
     if (resp.status !== 200) throw new IError(`Error: status code invalid ${resp.status}`, 0, 406, 'Captcha no válido');
-    console.log(resp.data);
     const { success } = resp.data;
     if (!success) throw new IError(`Error: success: ${success} `, 0, 406, 'Captcha no válido');
   }

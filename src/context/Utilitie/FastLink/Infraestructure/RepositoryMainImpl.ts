@@ -131,7 +131,7 @@ export class RepositoryMainImpl extends RepositoryImplMongo implements Repositor
       AdapterConfigure.ENTITY,
       { _id },
       {
-        shortLink: params.originalLink,
+        originalLink: params.originalLink,
         actualizar: params.actualizar,
       },
     );

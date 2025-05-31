@@ -1,5 +1,6 @@
 TZ=America/Lima
 ENVIRONMENT=produccion
+PREFIX=PORTFOLIO
 PORT=80
 DOMAINS=["localhost","ismaelhv.com","ihurtadov.com"]
 AUTH_BASIC=[{"usr":"PORTFOLIO", "pwd":"r!!WTY41gvN8K3E-()QLZ1K7T!cMez<?T"}]

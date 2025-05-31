@@ -13,7 +13,7 @@ const run = async () => {
     const server: ServerREST = new ServerREST();
     await server.exec();
 
-    server.app.use(rutas.router);
+    server.app.use(`/api`, rutas.router);
     await server.middlewareNotFound();
 
     console.info('   >> PID: ', process.pid);

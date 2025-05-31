@@ -64,12 +64,12 @@ jobs:
         env:
           NEW_VERSION: ${{ steps.version.outputs.version }}
         run: |
-          docker build -t $PROJECT_NAME:$NEW_VERSION .
-          docker build -t $PROJECT_NAME:latest .
+          docker build -t secrets.PROJECT_NAME:$NEW_VERSION .
+          docker build -t secrets.PROJECT_NAME:latest .
 
       - name: Push Docker Image
         env:
           NEW_VERSION: ${{ steps.version.outputs.version }}
         run: |
-          docker push $PROJECT_NAME:$NEW_VERSION
-          docker push $PROJECT_NAME:latest
+          docker push secrets.PROJECT_NAME:$NEW_VERSION
+          docker push secrets.PROJECT_NAME:latest

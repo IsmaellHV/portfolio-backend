@@ -28,7 +28,7 @@ jobs:
         run: echo "$ENV_FILE" | base64 --decode > .env
 
       - name: Install dependencies (npm)
-        run: npm ci
+        run: npm install
 
       - name: Run Format
         run: npm run format

@@ -36,6 +36,9 @@ jobs:
       - name: Run Lint
         run: npm run lint
 
+      - name: Run Minify
+        run: npm run minify
+
       - name: Build React App
         run: npm run build
 
@@ -61,12 +64,12 @@ jobs:
         env:
           NEW_VERSION: ${{ steps.version.outputs.version }}
         run: |
-          docker build -t ismaelhv/portfolio-backend:$NEW_VERSION .
-          docker build -t ismaelhv/portfolio-backend:latest .
+          docker build -t $PROJECT_NAME:$NEW_VERSION .
+          docker build -t $PROJECT_NAME:latest .
 
       - name: Push Docker Image
         env:
           NEW_VERSION: ${{ steps.version.outputs.version }}
         run: |
-          docker push ismaelhv/portfolio-backend:$NEW_VERSION
-          docker push ismaelhv/portfolio-backend:latest
+          docker push $PROJECT_NAME:$NEW_VERSION
+          docker push $PROJECT_NAME:latest

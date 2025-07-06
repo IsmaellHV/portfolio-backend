@@ -1,7 +1,7 @@
 {
   "name": "portfolio-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "A robust Node.js backend API built with TypeScript, Express, and MongoDB for portfolio website",
   "main": "index.ts",
   "scripts": {
     "start": "nodemon",
@@ -11,9 +11,30 @@
     "minify": "sh terser.sh ./build",
     "test": "jest --verbose"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "portfolio",
+    "backend",
+    "api",
+    "nodejs",
+    "typescript",
+    "express",
+    "mongodb",
+    "rest-api"
+  ],
+  "author": {
+    "name": "Ismael Hurtado",
+    "email": "ismaelhv@outlook.com",
+    "url": "https://ismaelhv.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IsmaellHV/portfolio-backend.git"
+  },
+  "homepage": "https://github.com/IsmaellHV/portfolio-backend#readme",
+  "bugs": {
+    "url": "https://github.com/IsmaellHV/portfolio-backend/issues"
+  },
   "dependencies": {
     "ajv": "^8.17.1",
     "ajv-formats": "^2.1.1",

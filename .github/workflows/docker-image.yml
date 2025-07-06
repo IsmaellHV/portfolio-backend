@@ -1,0 +1,77 @@
+name: DEPLOY-PRODUCCION
+
+on:
+  push:
+    branches:
+      - produccion
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js in GitHub Actions
+        run: |
+          curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          node -v
+
+      - name: Install dependencies with npm (GitHub Actions)
+        run: npm install
+
+      - name: Build Node.js (GitHub Actions)
+        run: npm run build
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+
+      - name: Add remote to known_hosts
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
+
+      - name: Deploy build files and package.json to server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
+        run: |
+          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./build/ $DEPLOY_USERNAME@$DEPLOY_HOST:$DEPLOY_DIRECTORY
+          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" package.json $DEPLOY_USERNAME@$DEPLOY_HOST:$DEPLOY_DIRECTORY
+
+      - name: Deploy .env file to server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: |
+          echo "$ENV_FILE" | base64 --decode | ssh $DEPLOY_USERNAME@$DEPLOY_HOST "cat > $DEPLOY_DIRECTORY/.env"
+
+      - name: Install Node.js on server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+        run: |
+          ssh $DEPLOY_USERNAME@$DEPLOY_HOST "
+            curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash - &&
+            sudo apt-get install -y nodejs
+          "
+
+      - name: Install dependencies on server with npm
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }}
+        run: |
+          ssh $DEPLOY_USERNAME@$DEPLOY_HOST "cd $DEPLOY_DIRECTORY && npm install"
